@@ -2,21 +2,36 @@
 #include <WiFiClient.h>
 #include <SPI.h>
 #include <MFRC522.h>
+#include <Wire.h>  // Pour les écrans LCD I2C
+#include <LiquidCrystal_I2C.h>
 
 const char* ssid = "Xarala";
 const char* password = "H@ckit21";
-const char* host = "192.168.1.65";  // Adresse IP de votre serveur Django
-const int port = 8000;  // Port utilisé par votre serveur Django
+const char* host = "192.168.1.65";
+const int port = 8000;
 
 #define SS_PIN D8
 #define RST_PIN D3
+#define BUZZER_PIN D4  // Broche pour le buzzer
+
 MFRC522 rfid(SS_PIN, RST_PIN);
+
+// Pour un écran LCD I2C
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Adresse I2C, nombre de colonnes, nombre de lignes
 
 void setup() {
   Serial.begin(115200);
   delay(10);
 
-  // Connexion au réseau WiFi
+  pinMode(BUZZER_PIN, OUTPUT);  // Définir le buzzer comme sortie
+
+  // Initialisation de l'écran LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Initialisation...");
+  
   Serial.println();
   Serial.println("Connexion à " + String(ssid));
   WiFi.begin(ssid, password);
@@ -28,14 +43,14 @@ void setup() {
   Serial.println("");
   Serial.println("WiFi connecté");
 
-  // Initialisation du lecteur RFID
   SPI.begin();
   rfid.PCD_Init();
   Serial.println("Lecteur RFID initialisé");
+  lcd.clear();
+  lcd.print("Prêt");
 }
 
 void loop() {
-  // Lecture RFID
   if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
     String uid = "";
     for (byte i = 0; i < rfid.uid.size; i++) {
@@ -44,10 +59,20 @@ void loop() {
     }
     Serial.print("UID RFID : ");
     Serial.println(uid);
+
+    // Afficher l'UID sur l'écran LCD
+    lcd.clear();
+    lcd.print("UID RFID:");
+    lcd.setCursor(0, 1);
+    lcd.print(uid);
+
+    // Activer le buzzer
+    tone(BUZZER_PIN, 1000, 500);  // Son de 500ms
+
     sendPostRequest(uid);
   }
 
-  delay(1000);  // Attente avant la prochaine itération
+  delay(1000);
 }
 
 void sendPostRequest(String uid) {
@@ -73,5 +98,5 @@ void sendPostRequest(String uid) {
     String response = client.readStringUntil('\r');
     Serial.println(response);
   }
-  delay(10);
+  delay(5000);
 }
