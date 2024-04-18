@@ -5,9 +5,9 @@
 #include <Wire.h>  // Pour les écrans LCD I2C
 #include <LiquidCrystal_I2C.h>
 
-const char* ssid = "Xarala";
-const char* password = "H@ckit21";
-const char* host = "192.168.1.65";
+const char* ssid = "Soxna maguette";//"Xarala";
+const char* password = "eeeeeeee";//"H@ckit21";
+const char* host = "172.20.10.9";
 const int port = 8000;
 
 #define SS_PIN D8

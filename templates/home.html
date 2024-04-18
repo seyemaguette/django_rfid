@@ -3,10 +3,16 @@
 {%block content%} 
 
 
-<h1>Hello, world!</h1>
+<h1 class='text-center'>Hello, world!</h1>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <li {% if message.tags %} class="alert alert-{{message.tags}}" role="alert"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 
-
-<p><a href="{%url 'receive_rfid_data'%}" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">ajouter un nouveau </a></p>
+<p class='text-center'><a class='text-warning'  style='text-decoration:wavy;' href="{%url 'receive_rfid_data'%}" >ajouter un nouveau </a></p>
 {%endblock content%} 
 
 
