@@ -1,23 +1,58 @@
 {% extends "base.html" %}
 
 {%block content%} 
-{% if check%}
-    <label>Deja pris</label> <br>
-    {% endif%} 
+
+{%if uid or fingerprint_id %}
    {%if uid %}
-    <div><label for="uidInput">UID RFID:</label>
-    <input type="text" id="uidInput" name="uid" value="{{uid}}" readonly >  <!-- Input avec l'ID "uidInput" -->
- </div>
+   
  <div>
-    {% if check%}
-    <p>Votre nom :{{test.name}} </p>
-    <p>Votre UID :{{test.uid}} </p>
- {% else%}
- <a href=" {% url 'new_etudiant'  uid %}"> ajouter vos infos</a>
- {% endif%} 
+    {% if check_uid%}
+    <li  class="alert alert-danger" role="alert">UID: "{{uid}}" EST DEJA PRIS {{testuid.name}}  code permenant {{testuid.codePermenant}} </li>
+
+    {% else%}
+    <div><label for="uidInput">UID RFID:</label>
+        <input type="text" id="uidInput" name="uid" value="{{uid}}" readonly >  <!-- Input avec l'ID "uidInput" -->
+     </div>
+     <p>
+         <a href=" {% url 'new_rfid'  uid %}"> ajouter uid a un etudiant</a>
+    </p>
+    {% endif%} 
  </div>
-    {% endif%}
-    <button type="button" onclick="refreshPage()">obtenir uid de la carte</button>  <!-- Bouton de rafraîchissement -->
+ {% comment %} <button type="button" onclick="refreshPage()">obtenir uid de la carte</button>  <!-- Bouton de rafraîchissement --> {% endcomment %}
+
+ {% endif%} 
+    <div>
+    {%if fingerprint_id %}
+    
+    {% if check_fingerprint_id%}
+    <div>
+        <li  class="alert alert-danger" role="alert">L'empreinte: "{{fingerprint_id}}" EST DEJA PRIS {{testfingerprint_id.name}}  code permenant {{testfingerprint_id.codePermenant}}  </li>
+        
+        {% else%}
+        <div>
+            <label for="fingerprint_idInput">fingerprint_id RFID:</label>
+            <input type="text" id="fingerprint_idInput" name="fingerprint_id" value="{{fingerprint_id}}" readonly >  <!-- Input avec l'ID "fingerprint_idInput" -->
+        </div>
+        <p>
+        <a href=" {% url 'new_fingerprint'  fingerprint_id %}"> ajouter id de l'empreinte a un etudiant</a>
+        </p>
+        {% endif%} 
+     </div>
+    {% comment %} <button type="button" onclick="refreshPage()">obtenir id de l'empreinte</button>  <!-- Bouton de rafraîchissement --> {% endcomment %}
+
+</div>
+{% endif%} 
+{% else%}
+<li  class="alert alert-danger" role="alert">METTEZ VOTRE DOIGT OU CARTE </li>
+
+{% endif%}
+<button type="button" onclick="refreshPage()">obtenir l'infos de l'arduino</button>  <!-- Bouton de rafraîchissement -->
+<p>
+    <a href=" {% url 'new_etudiant'  %}"> ajouter un nouveau etudiant</a>
+</p>
+ 
+    
+    {% comment %} <button type="button" onclick="refreshPage()">obtenir uid de la carte</button>  <!-- Bouton de rafraîchissement --> {% endcomment %}
     {% comment %} <a href=" {% url 'new_etudiant' %}"></a> {% endcomment %}
 
 <script>

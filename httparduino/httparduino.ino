@@ -5,9 +5,9 @@
 #include <Wire.h>  // Pour les écrans LCD I2C
 #include <LiquidCrystal_I2C.h>
 
-const char* ssid = "Soxna maguette";//"Xarala";
-const char* password = "eeeeeeee";//"H@ckit21";
-const char* host = "172.20.10.9";
+const char* ssid = "Xarala"; //"Soxna maguette";
+const char* password = "H@ckit21"; //"eeeeeeee";
+const char* host = "192.168.1.146";
 const int port = 8000;
 
 #define SS_PIN D8
@@ -72,7 +72,7 @@ void loop() {
     sendPostRequest(uid);
   }
 
-  delay(1000);
+  // delay(1000);
 }
 
 void sendPostRequest(String uid) {
@@ -98,5 +98,5 @@ void sendPostRequest(String uid) {
     String response = client.readStringUntil('\r');
     Serial.println(response);
   }
-  delay(5000);
+  delay(1000);
 }
