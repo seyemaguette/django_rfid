@@ -12,7 +12,7 @@ class UID(models.Model):
 
 class Etudiant(models.Model):
     name = models.CharField(max_length=50, null=True)
-    codePermenant = models.CharField(max_length=50, null=True)
+    codePermenant = models.CharField(max_length=50, null=True,unique=True)
     uid = models.CharField(max_length=20, unique=True, null=True)
     fingerprint_id = models.CharField(max_length=20, unique=True,null=True)
     

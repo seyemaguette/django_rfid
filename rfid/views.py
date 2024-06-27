@@ -12,13 +12,6 @@ check_uid = False
 check_fingerprint_id = False
 testuid = None
 testfingerprint_id = None
-response_data = {}
-
-def home(request):
-    return render(request,'home.html')
-
-
-
 
 @csrf_exempt
 def receive_rfid_data(request):
@@ -29,6 +22,7 @@ def receive_rfid_data(request):
     global testuid
     global testfingerprint_id
     # uid = 'kk3nnn65'
+    fingerprint_id = request.POST.get('fingerprint_id', None)
         
     if request.method == 'POST':
         uid = request.POST.get('uid', None)
@@ -70,13 +64,20 @@ def new_etudiant(request):
         codePermenant = request.POST.get('codePermenant')
         name = request.POST.get('name')
         if codePermenant.isdigit() :
-            etudiant=Etudiant.objects.create(
-            name =name,  
-            codePermenant =codePermenant,  
-            )
-            etudiant.save()
-            messages.success(request, "L'etudiant a ete bien ajoute")
-            return redirect('/')
+            check_codePermenant = Etudiant.objects.filter(codePermenant=codePermenant).exists()
+            if check_codePermenant :
+                messages.error(request, "Le code permenant est deja pris ")
+                return redirect('/new_etudiant/')
+
+            else :
+                etudiant=Etudiant.objects.create(
+                name =name,  
+                codePermenant =codePermenant,  
+                )
+                etudiant.save()
+                messages.success(request, "L'etudiant a ete bien ajoute")
+                return redirect('/')
+
         else  :
             messages.error(request, "Le code permenant doit comporter uniquement des caractères numeriques et doit pas etre nul")
 
@@ -133,3 +134,9 @@ def new_rfid(request,uid):
             messages.error(request, "Le nom doit comporter uniquement des caractères alphabétiques et doit pas etre nul")
 
     return render(request,'new_rfid.html',{"uid":uid})
+
+
+
+
+def home(request):
+    return render(request,'home.html')
